@@ -8,13 +8,16 @@ public class TextScroller : MonoBehaviour {
 	public GameObject prefab;
 	public GameObject prefabImage;
 	public TextAsset[] textes;
-	public Sprite[] image;
+	public Sprite[] images;
+
+	public Gradient gradient;
 	List<string>[] strings;
 	// Use this for initialization
 	int objectCount;
 	int part;
 	void Start () 
 	{
+		Debug.Assert(textes.Length == images.Length);
 		strings = new List<string>[textes.Length];
 		for(int i = 0; i < textes.Length; i++)
 		{
@@ -47,18 +50,22 @@ public class TextScroller : MonoBehaviour {
 		for(int i = 0; i < nb; i++)
 		{
 			GameObject go = Instantiate(prefab, Vector3.zero, Quaternion.identity,transform);
+			go.GetComponent<TMP_Text>().color = gradient.Evaluate(objectCount/strings[part].Count);
 			go.GetComponent<TMP_Text>().text = strings[part][objectCount++];
+
+			Debug.Log("Part: " + part + " - Object: " + objectCount);
+			yield return new WaitForEndOfFrame(); 		
+			go.GetComponent<RectTransform>().sizeDelta = (Vector2)(go.GetComponent<TMP_Text>().bounds.size);
 			if(objectCount >= strings[part].Count)
 			{
+				go = Instantiate(prefabImage, Vector3.zero, Quaternion.identity, transform);
+				go.GetComponent<Image>().sprite = images[part];
 				objectCount = 0;
 				part++;
 				if(part >= strings.Length)
 					part = 0;
-
+				yield return new WaitForEndOfFrame();
 			}
-			Debug.Log("Part: " + part + " - Object: " + objectCount);
-			yield return new WaitForEndOfFrame(); 		
-			go.GetComponent<RectTransform>().sizeDelta = (Vector2)(go.GetComponent<TMP_Text>().bounds.size);
 		}
 		ready = true;
 	}	
