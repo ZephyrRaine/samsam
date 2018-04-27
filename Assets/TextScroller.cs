@@ -30,15 +30,32 @@ public class TextScroller : MonoBehaviour {
 				int lastIndex = startIndex + offset;
 				if(lastIndex > texte.text.Length)
 					lastIndex = texte.text.Length;
-				strings[i].Add(texte.text.Substring(startIndex, offset));
+				string toAdd = texte.text.Substring(startIndex, offset);
+				toAdd = toAdd.Replace(' ', '$');
+				strings[i].Add(toAdd);
 				startIndex+=offset;
 			} while(startIndex + offset < texte.text.Length);
 		}
 		StartCoroutine(InstantiateTextObjects(10));
 	}
 
-	IEnumerator InstantiateTextObjects(int nb = -1)
+	private void OnDrawGizmos()
 	{
+		Rect mine = GetWorldSapceRect(GetComponent<RectTransform>());
+		Gizmos.color = Color.blue;
+		Gizmos.DrawCube(mine.center, mine.size);
+		foreach(Transform t in transform)
+		{
+			RectTransform tr = t.GetComponent<RectTransform>();
+			Rect rect = GetWorldSapceRect(tr); 
+			Gizmos.color = Color.Lerp(Color.black, Color.white, t.GetSiblingIndex()/transform.childCount);
+			Gizmos.DrawCube(rect.center, rect.size);
+		}
+	}
+
+	IEnumerator InstantiateTextObjects(int nb = -1, GameObject toDestroy = null)
+	{
+
 		if(nb == -1)
 		{
 			nb = 0;
@@ -50,12 +67,27 @@ public class TextScroller : MonoBehaviour {
 		for(int i = 0; i < nb; i++)
 		{
 			GameObject go = Instantiate(prefab, Vector3.zero, Quaternion.identity,transform);
-			go.GetComponent<TMP_Text>().color = gradient.Evaluate(objectCount/strings[part].Count);
-			go.GetComponent<TMP_Text>().text = strings[part][objectCount++];
+			TMP_Text textComp = go.GetComponent<TMP_Text>();
+			textComp.color = new Color(0f,0f,0f,0f);
+			textComp.text = strings[part][objectCount++];
 
 			Debug.Log("Part: " + part + " - Object: " + objectCount);
-			yield return new WaitForEndOfFrame(); 		
-			go.GetComponent<RectTransform>().sizeDelta = (Vector2)(go.GetComponent<TMP_Text>().bounds.size);
+			yield return new WaitForEndOfFrame(); 
+			
+			textComp.color = gradient.Evaluate(objectCount/strings[part].Count);
+			RectTransform tr = go.GetComponent<RectTransform>();		
+			tr.sizeDelta = new Vector2(textComp.bounds.size.x, tr.sizeDelta.y);
+			textComp.text = textComp.text.Replace('$', ' ');
+			int sib = go.transform.GetSiblingIndex(); 
+			if(sib != 0)
+			{
+				RectTransform previous = transform.GetChild(sib-1).GetComponent<RectTransform>(); 
+				tr.anchoredPosition = previous.anchoredPosition + Vector2.right * previous.sizeDelta.x; 
+			}
+			else
+			{
+				tr.anchoredPosition = Vector2.zero;	
+			}
 			if(objectCount >= strings[part].Count)
 			{
 				go = Instantiate(prefabImage, Vector3.zero, Quaternion.identity, transform);
@@ -66,6 +98,12 @@ public class TextScroller : MonoBehaviour {
 					part = 0;
 				yield return new WaitForEndOfFrame();
 			}
+		}
+		
+		if(toDestroy != null)
+		{
+			Destroy(toDestroy);
+			yield return new WaitForEndOfFrame();
 		}
 		ready = true;
 	}	
@@ -83,16 +121,17 @@ public class TextScroller : MonoBehaviour {
 				RectTransform rt = t.GetComponent<RectTransform>();
 				rt.anchoredPosition += Vector2.left * speed * Time.deltaTime;
 				// Debug.Log(rt.rect);
-				if(!GetWorldSapceRect(rt).Overlaps(GetWorldSapceRect(rtt)) && rt.position.x < rtt.position.x)
+				if(rt.anchoredPosition.x < -rt.sizeDelta.x)
 				{
 					toDestroy = t.gameObject;
 				}
 			}
 
+			Debug.Log(toDestroy);
+
 			if(toDestroy != null)
 			{
-				Destroy(toDestroy);
-				StartCoroutine(InstantiateTextObjects(1));
+				StartCoroutine(InstantiateTextObjects(1, toDestroy));
 			}
 		}
 	}
