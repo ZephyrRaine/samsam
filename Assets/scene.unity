@@ -162,10 +162,10 @@ MonoBehaviour:
   prefabImage: {fileID: 1329396228729422, guid: b704afd04b7b0ff49b7e087221b166f7,
     type: 2}
   textes:
-  - {fileID: 4900000, guid: 788ca54e323d0644ba2f654d5841083a, type: 3}
-  - {fileID: 4900000, guid: 4c8913cdc21e92f46ab67bc21c8bdff4, type: 3}
-  - {fileID: 4900000, guid: b1d7e1cfe10d52b47aeef8c94aaa7565, type: 3}
-  - {fileID: 4900000, guid: b78ee41b9a22254449a6559c0e40f903, type: 3}
+  - {fileID: 4900000, guid: 1c7146884fa86044fbe1ca3c1ed1c1b2, type: 3}
+  - {fileID: 4900000, guid: 853c6bed0f581364688340b55998da03, type: 3}
+  - {fileID: 4900000, guid: af7f89c63fdd57b4cb8f448607bf0b2c, type: 3}
+  - {fileID: 4900000, guid: 9bff467503494d04fba760f8d3dcf23e, type: 3}
   images:
   - {fileID: 21300000, guid: 43bc3e5eae58daf4fbc9527be3d6b7a4, type: 3}
   - {fileID: 21300000, guid: 5dcc254fa6ce29b469b115bbd7b1c917, type: 3}
@@ -200,7 +200,7 @@ MonoBehaviour:
     m_Mode: 0
     m_NumColorKeys: 4
     m_NumAlphaKeys: 2
-  speed: 500
+  speed: 217.26576
 --- !u!1 &846094131
 GameObject:
   m_ObjectHideFlags: 0

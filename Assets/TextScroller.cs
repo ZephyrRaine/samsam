@@ -22,7 +22,7 @@ public class TextScroller : MonoBehaviour {
 		for(int i = 0; i < textes.Length; i++)
 		{
 			int startIndex = 0;
-			int offset = 100;
+			int offset = 1000;
 			TextAsset texte = textes[i];
 			strings[i] = new List<string>();
 			do
