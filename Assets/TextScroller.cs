@@ -97,7 +97,8 @@ public class TextScroller : MonoBehaviour {
 			}
 			else
 			{
-				tr.anchoredPosition = Vector2.zero;	
+				tr.anchoredPosition = Vector2.zero;
+				// tr.anchoredPosition = Vector2.left * 3000000f;	
 			}
 			if(shouldSpawnImage)
 			{
