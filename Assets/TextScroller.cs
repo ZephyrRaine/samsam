@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System;
 public class TextScroller : MonoBehaviour {
 
 	public GameObject prefab;
@@ -97,7 +98,12 @@ public class TextScroller : MonoBehaviour {
 			}
 			else
 			{
-				tr.anchoredPosition = Vector2.zero;
+				// DateTime currentDate = DateTime.Now;
+				// long elapsedTicks = currentDate.Ticks - centuryBegin.Ticks;
+				// TimeSpan elapsedSpan = new TimeSpan(elapsedTicks);
+				System.TimeSpan sinceMidnight = System.DateTime.Now - System.DateTime.Today;
+				double secs = sinceMidnight.TotalSeconds;
+				tr.anchoredPosition = Vector2.left * (float)secs * speed;
 				// tr.anchoredPosition = Vector2.left * 3000000f;	
 			}
 			if(shouldSpawnImage)
@@ -130,6 +136,7 @@ public class TextScroller : MonoBehaviour {
 		{
 			RectTransform rtt = transform.parent.GetComponent<RectTransform>();
 			GameObject toDestroy = null;
+		
 			foreach(Transform t in transform)
 			{
 				RectTransform rt = t.GetComponent<RectTransform>();
