@@ -80,7 +80,7 @@ public class TextScroller : MonoBehaviour {
 				TMP_Text textComp = go.GetComponent<TMP_Text>();
 				textComp.color = new Color(0f,0f,0f,0f);
 				textComp.text = strings[part][objectCount];
-				Debug.Log("Part: " + part + " - Object: " + objectCount);
+				//Debug.Log("Part: " + part + " - Object: " + objectCount);
 				yield return new WaitForEndOfFrame(); 
 				
 				textComp.color = gradient.Evaluate((float)objectCount/(float)strings[part].Count);
@@ -103,6 +103,7 @@ public class TextScroller : MonoBehaviour {
 				// TimeSpan elapsedSpan = new TimeSpan(elapsedTicks);
 				System.TimeSpan sinceMidnight = System.DateTime.Now - System.DateTime.Today;
 				double secs = sinceMidnight.TotalSeconds;
+				secs = secs % (4*3600);
 				tr.anchoredPosition = Vector2.left * (float)secs * speed;
 				// tr.anchoredPosition = Vector2.left * 3000000f;	
 			}
@@ -125,7 +126,12 @@ public class TextScroller : MonoBehaviour {
 			Destroy(toDestroy);
 			yield return new WaitForEndOfFrame();
 		}
-		ready = true;
+		if(!ready)
+		{
+			ready = true;
+			yield return new WaitForEndOfFrame();
+			transform.parent.GetComponentInChildren<blinker>().gameObject.SetActive(false);
+		}
 	}	
 	bool ready;
 	// Update is called once per frame
@@ -134,6 +140,7 @@ public class TextScroller : MonoBehaviour {
 	{
 		if(ready)
 		{
+
 			RectTransform rtt = transform.parent.GetComponent<RectTransform>();
 			GameObject toDestroy = null;
 		
